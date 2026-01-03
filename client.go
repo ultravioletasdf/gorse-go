@@ -76,7 +76,11 @@ func (c *GorseClient) GetLatestItems(ctx context.Context, userId string, categor
 }
 
 func (c *GorseClient) GetNonPersonalized(ctx context.Context, name string, category string, n int, offset int, userId string) ([]Score, error) {
-	return request[[]Score, any](ctx, c, "GET", c.entryPoint+fmt.Sprintf("/api/non-personalized/%s?category=%s&n=%d&offset=%d&user-id=%s", name, category, n, offset, userId), nil)
+	path := fmt.Sprintf("/api/non-personalized/%s?n=%d&offset=%d&user-id=\"%s\"", name, n, offset, userId)
+	if category != "" {
+		path += fmt.Sprintf("&category=%s", category)
+	}
+	return request[[]Score, any](ctx, c, "GET", c.entryPoint+path, nil)
 }
 
 func (c *GorseClient) GetRecommendOffSet(ctx context.Context, userId string, category string, n, offset int) ([]string, error) {
